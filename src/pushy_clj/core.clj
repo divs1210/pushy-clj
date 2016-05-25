@@ -46,7 +46,7 @@
   "Returns a SimpleApnsPushNotification object.
   `token` is the device token
   `topic` if nil, will be picked from the cert
-  `payload` should be a hash-map that follows Apple's guidelines:  http://tinyurl.com/jj97ep6"
+  `payload` should be a hashmap that follows Apple's guidelines:  http://tinyurl.com/jj97ep6"
   [^String token ^String topic payload]
   (SimpleApnsPushNotification. (TokenUtil/sanitizeTokenString token)
                                topic
@@ -54,22 +54,22 @@
 
 
 (defn ^Future send-push-notification
-  "Sends the given notification.
-  Returns a netty Future on which `.get` can be called to get the
-  response synchronously."
+  "Sends the given notification asynchronously.
+  Returns a netty Future<PushNotificationResponse> which can be
+  derefed (using deref/@) to get the response synchronously."
   [^ApnsClient client ^ApnsPushNotification notification]
   (.sendNotification client notification))
 
 
 (defn response-future->map
-  "Blocks on and converts a netty Future<PushNotificationResponse>
+  "Derefs (blocks on) and converts a netty Future<PushNotificationResponse>
   into a hashmap with three keys:
   `:accepted?` whether the notification was accepted by APNs
   `:rejection-reason` why the notification was rejected (if it was)
   `:token-expiration-ts` when the token expired (if it did)"
   [^Future response]
   (try
-    (let [resp (.get response)]
+    (let [resp @response]
       {:accepted? (.isAccepted resp)
        :rejection-reason (.getRejectionReason resp)
        :token-expiration-ts (.getTokenInvalidationTimestamp resp)})
