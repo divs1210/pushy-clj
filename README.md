@@ -9,7 +9,7 @@ Make sure you have a [Universal Push Notification Client SSL Certificate](https:
 
 ## Leiningen
 
-`[pushy-clj "0.1.0-SNAPSHOT"]`
+`[pushy-clj "0.2.0-SNAPSHOT"]`
 
 ## Usage
 
