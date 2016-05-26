@@ -41,15 +41,14 @@ Then we build a notification following Apple's [guidelines](https://developer.ap
 Now, we can send the notification:
 
 ```clojure
-(def resp (send-push-notification client notification)) ;; async operation!
+(def resp-future (send-push-notification client notification)) ;; async operation!
 ```
 
-The notification is sent asynchronously, and `resp` is returned immediately.
-We can make a blocking call to wait for the actual response from APNs in the
-following manner:
+The notification is sent asynchronously, and `resp-future` is returned immediately.
+This future can be derefed to get the response as a hashmap.
 
 ```clojure
-(response-future->map resp) ;; blocking operation
+@resp-future ;; blocking operation
 
 ;; => {:accepted? true
 ;;     :rejection-reason nil

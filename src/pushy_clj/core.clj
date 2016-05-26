@@ -5,7 +5,8 @@
   (:import [com.relayrides.pushy.apns ApnsClient ApnsPushNotification]
            [com.relayrides.pushy.apns.util SimpleApnsPushNotification TokenUtil]
            io.netty.util.concurrent.Future
-           java.io.InputStream))
+           java.io.InputStream
+           [java.util.concurrent TimeoutException TimeUnit]))
 
 (def ^:const apns-hosts
   {:dev  ApnsClient/DEVELOPMENT_APNS_HOST
@@ -53,27 +54,51 @@
                                (build-payload payload)))
 
 
-(defn ^Future send-push-notification
-  "Sends the given notification asynchronously.
-  Returns a netty Future<PushNotificationResponse> which can be
-  derefed (using deref/@) to get the response synchronously."
-  [^ApnsClient client ^ApnsPushNotification notification]
-  (.sendNotification client notification))
-
-
-(defn response-future->map
-  "Derefs (blocks on) and converts a netty Future<PushNotificationResponse>
-  into a hashmap with three keys:
+(defn ^:private response->map
+  "Converts a PushNotificationResponse into a hashmap with three keys:
   `:accepted?` whether the notification was accepted by APNs
   `:rejection-reason` why the notification was rejected (if it was)
   `:token-expiration-ts` when the token expired (if it did)"
-  [^Future response]
+  [response]
   (try
-    (let [resp @response]
-      {:accepted? (.isAccepted resp)
-       :rejection-reason (.getRejectionReason resp)
-       :token-expiration-ts (.getTokenInvalidationTimestamp resp)})
+    {:accepted? (.isAccepted response)
+     :rejection-reason (.getRejectionReason response)
+     :token-expiration-ts (.getTokenInvalidationTimestamp response)}
     (catch Exception e
       {:accepted? false
        :rejection-reason "ConnectionError"
        :token-expiration-ts nil})))
+
+
+(defn send-push-notification
+  "Sends the given notification asynchronously.
+  Returns a future  that can be derefed (using deref/@) to get the
+  response synchronously as a map with three keys:
+  `:accepted?` whether the notification was accepted by APNs
+  `:rejection-reason` why the notification was rejected (if it was)
+  `:token-expiration-ts` when the token expired (if it did)"
+  [^ApnsClient client ^ApnsPushNotification notification]
+  (let [response-future (.sendNotification client notification)]
+    (reify
+      clojure.lang.IDeref
+      (deref [_]
+        (response->map (.get response-future)))
+      clojure.lang.IBlockingDeref
+      (deref [_ timeout-ms timeout-val]
+        (try (response->map (.get response-future timeout-ms TimeUnit/MILLISECONDS))
+             (catch TimeoutException e
+               timeout-val)))
+      clojure.lang.IPending
+      (isRealized [_]
+        (.isDone response-future))
+      java.util.concurrent.Future
+      (get [_]
+        (response->map (.get response-future)))
+      (get [_ timeout unit]
+        (response->map (.get response-future timeout unit)))
+      (isCancelled [_]
+        (.isCancelled response-future))
+      (isDone [_]
+        (.isDone response-future))
+      (cancel [_ interrupt?]
+        (.cancel response-future interrupt?)))))
