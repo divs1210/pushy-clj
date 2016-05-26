@@ -7,6 +7,10 @@ It's a thin wrapper around [Pushy](https://github.com/relayrides/pushy).
 
 Make sure you have a [Universal Push Notification Client SSL Certificate](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html#//apple_ref/doc/uid/TP40012582-CH26-SW11) from Apple before continuing.
 
+## Leiningen
+
+`[pushy-clj "0.1.0-SNAPSHOT"]`
+
 ## Usage
 
 First, we create a client and connect to the APNs development server:
