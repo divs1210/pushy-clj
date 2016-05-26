@@ -2,7 +2,7 @@
       :doc "Wrapper over Pushy APNs lib <https://github.com/relayrides/pushy>"}
   pushy-clj.core
   (:require [clojure.data.json :as json])
-  (:import [com.relayrides.pushy.apns ApnsClient ApnsPushNotification]
+  (:import [com.relayrides.pushy.apns ApnsClient ApnsPushNotification PushNotificationResponse]
            [com.relayrides.pushy.apns.util SimpleApnsPushNotification TokenUtil]
            io.netty.util.concurrent.Future
            java.io.InputStream
@@ -59,7 +59,7 @@
   `:accepted?` whether the notification was accepted by APNs
   `:rejection-reason` why the notification was rejected (if it was)
   `:token-expiration-ts` when the token expired (if it did)"
-  [response]
+  [^PushNotificationResponse response]
   (try
     {:accepted? (.isAccepted response)
      :rejection-reason (.getRejectionReason response)
@@ -78,7 +78,7 @@
   `:rejection-reason` why the notification was rejected (if it was)
   `:token-expiration-ts` when the token expired (if it did)"
   [^ApnsClient client ^ApnsPushNotification notification]
-  (let [response-future (.sendNotification client notification)]
+  (let [response-future ^Future (.sendNotification client notification)]
     (reify
       clojure.lang.IDeref
       (deref [_]
