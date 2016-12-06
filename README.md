@@ -28,7 +28,7 @@ First, we create a client and connect to the APNs development server:
                       ;; use :prod in production env
 ```
 
-Then we build a notification following Apple's [guidelines](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/TheNotificationPayload.html#//apple_ref/doc/uid/TP40008194-CH107-SW1):
+Then we build a notification following Apple's [guidelines](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CreatingtheNotificationPayload.html#//apple_ref/doc/uid/TP40008194-CH10-SW1):
 
 ```clojure
 (def payload {:aps {:alert "Hello!"}})
@@ -68,5 +68,4 @@ be sure to re-use existing connections.
 
 Copyright © 2016 Divyansh Prakash
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Eclipse Public License version 1.0.
