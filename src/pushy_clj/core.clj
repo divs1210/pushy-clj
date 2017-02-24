@@ -2,11 +2,20 @@
       :doc "Wrapper over Pushy APNs lib <https://github.com/relayrides/pushy>"}
   pushy-clj.core
   (:require [clojure.data.json :as json])
-  (:import [com.relayrides.pushy.apns ApnsClient ApnsPushNotification PushNotificationResponse]
-           [com.relayrides.pushy.apns.util SimpleApnsPushNotification TokenUtil]
+  (:import [com.relayrides.pushy.apns
+            ApnsClient
+            ApnsClientBuilder
+            ApnsPushNotification
+            PushNotificationResponse]
+           [com.relayrides.pushy.apns.util
+            SimpleApnsPushNotification
+            TokenUtil]
            io.netty.util.concurrent.Future
            java.io.InputStream
-           [java.util.concurrent TimeoutException TimeUnit]))
+           java.util.Collection
+           [java.util.concurrent
+            TimeoutException
+            TimeUnit]))
 
 (def ^:const apns-hosts
   {:dev  ApnsClient/DEVELOPMENT_APNS_HOST
@@ -14,10 +23,19 @@
 
 
 (defn ^ApnsClient make-client
-  "Takes the certificate as an InputStream and a password
-  and returns an ApnsClient."
-  [^InputStream cert ^String pass]
-  (ApnsClient. cert pass))
+  "Builds and and returns an `ApnsClient`.
+  Create a client with a signing key instead of a certificate
+  to use token-based authentication.
+  If called with no args, call `.registerSigningkey` on the
+  client later for token-based authentication."
+  ([]
+   (.build (ApnsClientBuilder.)))
+  ([^InputStream cert ^String pass]
+   (-> (ApnsClientBuilder.)
+       (.setClientCredentials cert pass)
+       .build))
+  ([^InputStream signing-key ^String team-id ^String key-id ^Collection topics]
+   (.registerSigningKey (make-client) signing-key team-id key-id topics)))
 
 
 (defn connect

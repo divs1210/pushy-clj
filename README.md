@@ -1,15 +1,17 @@
 # pushy-clj
 
-A Clojure library for sending push notifications to Apple devices using the
-new HTTP/2 protocol.
+A Clojure library for sending push notifications via APNS to Apple devices
+using the new HTTP/2 protocol.
 
 It's a thin wrapper around [Pushy](https://github.com/relayrides/pushy).
 
-Make sure you have a [Universal Push Notification Client SSL Certificate](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html#//apple_ref/doc/uid/TP40012582-CH26-SW11) from Apple before continuing.
+Make sure you have one of:
+* [Universal Push Notification Client SSL Certificate](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html#//apple_ref/doc/uid/TP40012582-CH26-SW11) from Apple before continuing.
+* APNS Auth Key from [Apple member center](https://developer.apple.com/account/)
 
 ## Leiningen
 
-`[pushy-clj "0.2.1"]`
+`[pushy-clj "0.3.0"]`
 
 ## Usage
 
@@ -21,8 +23,13 @@ First, we create a client and connect to the APNs development server:
 
 (import 'java.io.File)
 
+;; Old-school certificate-based auth
 (with-open [cert (io/input-stream (File. "/path/to/cert.p12"))]
   (def client (make-client cert "password")))
+
+;; New token-based auth
+(with-open [key (io/input-stream (File. "/path/to/key.p8"))]
+  (def client (make-client key "team-id" "key-id" ["topic-1" "topic-2"])))
 
 (connect client :dev) ;; blocking operation, unlike Pushy
                       ;; use :prod in production env
