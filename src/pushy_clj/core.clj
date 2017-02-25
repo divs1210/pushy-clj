@@ -35,7 +35,9 @@
        (.setClientCredentials cert pass)
        .build))
   ([^InputStream signing-key ^String team-id ^String key-id ^Collection topics]
-   (.registerSigningKey (make-client) signing-key team-id key-id topics)))
+   (let [client (make-client)]
+     (.registerSigningKey  client signing-key team-id key-id topics)
+     client)))
 
 
 (defn connect
