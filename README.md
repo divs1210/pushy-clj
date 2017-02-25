@@ -6,7 +6,7 @@ using the new HTTP/2 protocol.
 It's a thin wrapper around [Pushy](https://github.com/relayrides/pushy).
 
 Make sure you have one of:
-* [Universal Push Notification Client SSL Certificate](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html#//apple_ref/doc/uid/TP40012582-CH26-SW11) from Apple before continuing.
+* [Universal Push Notification Client SSL Certificate](https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/AddingCapabilities/AddingCapabilities.html#//apple_ref/doc/uid/TP40012582-CH26-SW11)
 * APNS Auth Key from [Apple member center](https://developer.apple.com/account/)
 
 ## Leiningen
