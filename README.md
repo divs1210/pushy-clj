@@ -11,7 +11,7 @@ Make sure you have one of:
 
 ## Leiningen
 
-`[pushy-clj "0.3.1"]`
+`[pushy-clj "0.3.2"]`
 
 ## Usage
 
