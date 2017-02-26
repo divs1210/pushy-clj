@@ -13,10 +13,7 @@ Make sure you have one of:
 
 The current stable version is:
 
-`[pushy-clj "0.2.1"]`
-
-which does not support token-based authentication, which
-is being added in the 0.3.x releases.
+`[pushy-clj "0.3.3"]`
 
 ## Usage
 
