@@ -1,25 +1,17 @@
 (ns ^{:author "Divyansh Prakash <divyansh@helpshift.com>"
       :doc "Wrapper over Pushy APNs lib <https://github.com/relayrides/pushy>"}
-  pushy-clj.core
+ pushy-clj.core
   (:require [clojure.data.json :as json])
-  (:import [com.relayrides.pushy.apns
-            ApnsClient
-            ApnsClientBuilder
-            ApnsPushNotification
-            PushNotificationResponse]
-           [com.relayrides.pushy.apns.util
-            SimpleApnsPushNotification
-            TokenUtil]
+  (:import [com.turo.pushy.apns ApnsClient ApnsClientBuilder ApnsPushNotification PushNotificationResponse]
+           [com.turo.pushy.apns.util SimpleApnsPushNotification TokenUtil]
            io.netty.util.concurrent.Future
            java.io.InputStream
            java.util.Collection
-           [java.util.concurrent
-            TimeoutException
-            TimeUnit]))
+           [java.util.concurrent TimeoutException TimeUnit]))
 
 (def ^:const apns-hosts
-  {:dev  ApnsClient/DEVELOPMENT_APNS_HOST
-   :prod ApnsClient/PRODUCTION_APNS_HOST})
+  {:dev  ApnsClientBuilder/DEVELOPMENT_APNS_HOST
+   :prod ApnsClientBuilder/PRODUCTION_APNS_HOST})
 
 
 (defn ^ApnsClient make-client
