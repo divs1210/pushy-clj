@@ -7,7 +7,7 @@
            [com.turo.pushy.apns.auth ApnsSigningKey]
            io.netty.util.concurrent.Future
            java.io.InputStream
-           java.util.Collection
+           [java.util Collection Date]
            [java.util.concurrent TimeoutException TimeUnit]))
 
 (def ^:const apns-hosts
@@ -52,11 +52,17 @@
   "Returns a SimpleApnsPushNotification object.
   `token` is the device token
   `topic` if nil, will be picked from the cert
-  `payload` should be a hashmap that follows Apple's guidelines:  http://tinyurl.com/jj97ep6"
-  [^String token ^String topic payload]
-  (SimpleApnsPushNotification. (TokenUtil/sanitizeTokenString token)
-                               topic
-                               (build-payload payload)))
+  `payload` should be a hashmap that follows Apple's guidelines:  http://tinyurl.com/jj97ep6
+  `invalidation-time`, if present, is the timestamp after which delivery attempts should end"
+  ([^String token ^String topic payload]
+   (SimpleApnsPushNotification. (TokenUtil/sanitizeTokenString token)
+                                topic
+                                (build-payload payload)))
+  ([^String token ^String topic payload ^Date invalidation-time]
+   (SimpleApnsPushNotification. (TokenUtil/sanitizeTokenString token)
+                                topic
+                                (build-payload payload)
+                                invalidation-time)))
 
 
 (defn ^:private response->map
