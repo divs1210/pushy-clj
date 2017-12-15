@@ -27,15 +27,17 @@ First, we create a client and connect to the APNs development server:
 
 ;; Old-school certificate-based auth
 (with-open [cert (io/input-stream (File. "/path/to/cert.p12"))]
-  (def client (make-client cert "password")))
+  (def client (make-client :dev cert "password")))
+                    ;; use :prod in production env
 
 ;; New token-based auth
 (with-open [key (io/input-stream (File. "/path/to/key.p8"))]
-  (def client (make-client key "team-id" "key-id" ["topic-1" "topic-2"])))
+  (def client (make-client :dev key "team-id" "key-id")))
 
-(connect client :dev) ;; blocking operation, unlike Pushy
-                      ;; use :prod in production env
 ```
+
+Pushy is responsible for opening the connection to the specified
+server, and reopening it if anything causes it to close.
 
 Then we build a notification following Apple's [guidelines](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CreatingtheNotificationPayload.html#//apple_ref/doc/uid/TP40008194-CH10-SW1):
 

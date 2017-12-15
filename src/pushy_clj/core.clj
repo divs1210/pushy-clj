@@ -4,6 +4,7 @@
   (:require [clojure.data.json :as json])
   (:import [com.turo.pushy.apns ApnsClient ApnsClientBuilder ApnsPushNotification PushNotificationResponse]
            [com.turo.pushy.apns.util SimpleApnsPushNotification TokenUtil]
+           [com.turo.pushy.apns.auth ApnsSigningKey]
            io.netty.util.concurrent.Future
            java.io.InputStream
            java.util.Collection
@@ -15,34 +16,26 @@
 
 
 (defn ^ApnsClient make-client
-  "Builds and and returns an `ApnsClient`.
-  Create a client with a signing key instead of a certificate
-  to use token-based authentication.
-  If called with no args, call `.registerSigningkey` on the
-  client later for token-based authentication."
-  ([]
-   (.build (ApnsClientBuilder.)))
-  ([^InputStream cert ^String pass]
+  "Builds and and returns an `ApnsClient` that talks to the specified
+  `host` (which must be either `:dev` or `:prod`). Create a client
+  with a signing key instead of a certificate to use token-based
+  authentication."
+  ([host ^InputStream cert ^String pass]
    (-> (ApnsClientBuilder.)
+       (.setApnsServer (apns-hosts host))
        (.setClientCredentials cert pass)
        .build))
-  ([^InputStream signing-key ^String team-id ^String key-id ^Collection topics]
-   (let [client (make-client)]
-     (.registerSigningKey  client signing-key team-id key-id topics)
-     client)))
-
-
-(defn connect
-  "Establishes an APNs connection.
-  `host` must be either :dev or :prod."
-  [^ApnsClient client host]
-  (.await (.connect client (apns-hosts host))))
-
+  ([host ^InputStream signing-key-stream ^String team-id ^String key-id]
+   (let [signing-key (ApnsSigningKey/loadFromInputStream signing-key-stream team-id key-id)]
+     (-> (ApnsClientBuilder.)
+         (.setApnsServer (apns-hosts host))
+         (.setSigningKey signing-key)
+         .build))))
 
 (defn disconnect
-  "Closes the APNs connection."
+  "Closes the APNs connection of the specified client."
   [^ApnsClient client]
-  (.await (.disconnect client)))
+  (.await (.close client)))
 
 
 (defn build-payload
