@@ -17,6 +17,16 @@ The current stable version is:
 
 ## Usage
 
+> :wrench: If you are upgrading from versions prior to 0.4.0, note
+> that the API has changed, because of deep changes to the API of the
+> Pushy Java library itself. You will need to change your existing
+> code to conform to the examples below. There is no longer a
+> no-argument version of `make-client`, and you need to provide the
+> `:dev` or `:prod` keyword as a new, first argument. There is also no
+> longer a `connect` function; Pushy takes responsibility for the
+> connection as soon as you create the client, until you call
+> `disconnect`.
+
 First, we create a client and connect to the APNs development server:
 
 ```clojure
