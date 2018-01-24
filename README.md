@@ -82,9 +82,6 @@ Finally, we can close the connection using `disconnect`:
 (disconnect client) ;; blocking operation
 ```
 
-Apple considers frequent connecting and disconnecting to be a DoS attack, so
-be sure to re-use existing connections.
-
 ## License
 
 Copyright © 2016 Divyansh Prakash
