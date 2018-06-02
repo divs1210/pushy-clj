@@ -1,4 +1,4 @@
-(ns ^{:author "Divyansh Prakash <divyansh@helpshift.com>"
+(ns ^{:author "Divyansh Prakash"
       :doc "Wrapper over Pushy APNs lib <https://github.com/relayrides/pushy>"}
  pushy-clj.core
   (:require [clojure.data.json :as json])
