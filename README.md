@@ -13,7 +13,7 @@ Make sure you have one of:
 
 The current stable version is:
 
-`[pushy-clj "0.4.0"]`
+`[pushy-clj "0.5.0"]`
 
 ## Usage
 
