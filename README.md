@@ -82,6 +82,10 @@ Finally, we can close the connection using `disconnect`:
 (disconnect client) ;; blocking operation
 ```
 
+## Contributors
+
+[@brunchboy](https://github.com/brunchboy)
+
 ## License
 
 Copyright © 2016 Divyansh Prakash
