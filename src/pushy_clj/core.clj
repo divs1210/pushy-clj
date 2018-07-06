@@ -88,7 +88,7 @@
   `:accepted?` whether the notification was accepted by APNs
   `:rejection-reason` why the notification was rejected (if it was)
   `:token-expiration-ts` when the token expired (if it did)"
-  [^ApnsClient client ^ApnsPushNotification notification]
+  [^ApnsClient client notification]
   (let [response-future ^Future (.sendNotification client notification)]
     (reify
       clojure.lang.IDeref
