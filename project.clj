@@ -1,4 +1,4 @@
-(defproject pushy-clj "0.4.1"
+(defproject pushy-clj "0.4.2"
   :description "A Clojure wrapper over Pushy for sending APNs push notifications."
   :url "https://github.com/divs1210/pushy-clj"
   :license {:name "Eclipse Public License"
